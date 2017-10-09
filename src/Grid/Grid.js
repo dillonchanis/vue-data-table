@@ -1,7 +1,9 @@
 import _ from 'lodash'
+import axios from 'axios'
 import { warn } from '../helpers'
 
 import GridFilter from './GridFilter'
+import GridPageSize from './GridPageSize'
 import TableHead from './mixins/head'
 import TableBody from './mixins/body'
 
@@ -22,6 +24,14 @@ export default {
       type: String,
       default: 'label'
     },
+    editable: {
+      type: Boolean,
+      default: true
+    },
+    limitOptions: {
+      type: Array,
+      default: () => [25, 50, 100, 'All']
+    },
     noRecords: {
       type: String,
       default: 'No data available.'
@@ -32,11 +42,15 @@ export default {
     },
     records: {
       type: Array,
-      required: true,
       default: () => []
     },
     url: {
-      type: String
+      type: String,
+      default: null
+    },
+    withLimit: {
+      type: Boolean,
+      default: true
     },
     withFilter: {
       type: Boolean,
@@ -45,7 +59,17 @@ export default {
   },
   data () {
     return {
+      edit: {
+        row: null,
+        form: {}
+      },
       filterQuery: '',
+      limit: {
+        pageSize: this.limitOptions[0]
+      },
+      response: {
+        records: []
+      },
       sort: {
         key: 'id',
         order: 'asc'
@@ -54,7 +78,7 @@ export default {
   },
   computed: {
     filteredRecords () {
-      let data = this.records
+      let data = this.response.records
 
       data = data.filter(row => {
         return Object.keys(row).some(key => {
@@ -75,20 +99,56 @@ export default {
       return data
     },
     recordsLength () {
-      return this.records.length
+      return this.response.records.length
     }
   },
   mounted () {
+    this.response.records = this.records
+
     if (!this.recordsLength && !this.url) {
       this.warn('You must provide an array of data or an API endpoint to fetch data from.')
+    } else if (this.recordsLength && this.url) {
+      this.response.records = []
+      this.warn('Only provide an API endpoint or an array of data not both.')
+    } else if (this.url) {
+      this.getRecords()
     }
   },
   methods: {
+    clearEdit () {
+      this.edit.row = null
+      this.edit.form = {}
+    },
     createTableRow (row, data = {}) {
       return this.$createElement('tr', data, row)
     },
+    editRow (record) {
+      this.edit.row = record.id
+      this.edit.form = record
+    },
+    getRecords () {
+      return axios.get(`${this.url}?_start=0&_limit=${this.limit.pageSize}`).then((response) => {
+        this.response.records = response.data
+      })
+    },
     needsTableRow (row) {
-      return row.length && row.find(r => r.tag === 'td')
+      return row.length && (row.find(r => r.tag === 'td') || row.find(r => r.tag.includes('grid-column')))
+    },
+    saveRow (record) {
+      axios.patch(`${this.url}/${this.edit.row}`, this.edit.form).then((response) => {
+        // Placeholder for inline editing until actual server is setup
+        const newValue = this.response.records.map((record) => {
+          let columnValue = record
+
+          if (response.data.id === record.id) {
+            columnValue = response.data
+          }
+          return columnValue
+        })
+
+        this.response.records = newValue
+        this.clearEdit()
+      })
     },
     sortBy (column) {
       this.sort.key = column.value
@@ -104,8 +164,20 @@ export default {
         filterQuery: self.filterQuery
       },
       on: {
-        input (text) {
-          self.filterQuery = text
+        input (queryText) {
+          self.filterQuery = queryText
+        }
+      }
+    })
+
+    const pageSize = h(GridPageSize, {
+      props: {
+        limitOptions: self.limitOptions
+      },
+      on: {
+        change (pageSize) {
+          self.limit.pageSize = pageSize
+          self.getRecords()
         }
       }
     })
@@ -117,7 +189,8 @@ export default {
 
     const grid = h('div', {}, [
       this.withFilter ? filter : null,
-      table
+      table,
+      this.withLimit ? pageSize : null
     ])
 
     return grid

@@ -1,4 +1,5 @@
 import { isEmpty } from '../../helpers'
+import * as buttons from '../../constants'
 
 export default {
   methods: {
@@ -23,7 +24,7 @@ export default {
       return this.createTableRow([row])
     },
     createProps (record, index) {
-      return { record, index }
+      return { record, index, edit: this.edit }
     },
     createTD (record, data = {}) {
       const td = []
@@ -36,26 +37,50 @@ export default {
 
       return td.map(item => this.$createElement('td', data, item))
     },
+    handleFormEdit (record) {
+      if (this.isBeingEdited(record)) {
+        this.saveRow(record)
+      } else {
+        this.editRow(record)
+      }
+    },
+    isBeingEdited (record) {
+      return this.edit.row === record.id
+    },
+    createEditButton (record) {
+      return this.edit.row === record.id ? buttons.SAVE_BUTTON(this) : buttons.EDIT_BUTTON(this)
+    },
+    createBodyRow (row, record) {
+      const self = this
+
+      if (this.editable) {
+        row.push(this.$createElement('td', {
+          on: {
+            click (e) {
+              self.handleFormEdit(record)
+            }
+          }
+        }, [this.createEditButton(record)]))
+      }
+
+      return this.createTableRow(row)
+    },
     createFilteredRecords () {
       const rows = []
 
       this.filteredRecords.forEach((record, index) => {
         const props = this.createProps(record, index)
 
-        const row = this.$scopedSlots.records
-          ? this.$scopedSlots.records(props)
-          : []
+        const row = this.$scopedSlots.records ? this.$scopedSlots.records(props) : []
 
         rows.push(
           this.needsTableRow(row)
-            ? this.createTableRow(row)
+            ? this.createBodyRow(row, record)
             : row
         )
       })
 
-      if (!rows.every(isEmpty)) {
-        return rows
-      }
+      if (!rows.every(isEmpty)) return rows
 
       return this.filteredRecords.map(record => this.createTableRow(this.createTD(record)))
     }

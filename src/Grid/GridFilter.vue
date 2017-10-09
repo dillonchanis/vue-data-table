@@ -1,7 +1,7 @@
 <template>
   <div class="grid__filter">
     <label for="filter">Filter</label>
-    <input id="filter" name="filter" type="text" v-model="query" />
+    <input id="filter" name="filter" type="text" :query="query" @input="updateQuery" />
   </div>
 </template>
 
@@ -19,9 +19,10 @@ export default {
       query: ''
     }
   },
-  watch: {
-    'query': function () {
-      this.$emit('input', this.query)
+  methods: {
+    updateQuery (e) {
+      this.query = e.target.value
+      this.$emit('input', e.target.value)
     }
   },
   created () {
@@ -29,6 +30,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-</style>

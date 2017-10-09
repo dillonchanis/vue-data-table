@@ -3,6 +3,10 @@ export default {
     createTableHead () {
       const row = this.columns.map(c => this.createHeader(c))
 
+      if (this.editable) {
+        row.push(this.$createElement('th', {}, []))
+      }
+
       return this.$createElement('thead', [this.createTableRow(row)])
     },
     createHeader (column) {
@@ -24,6 +28,10 @@ export default {
             this.sortBy(column)
           }
         }
+      }
+
+      if (this.sort.key === column.value) {
+        data.attrs['aria-sort'] = this.sort.order
       }
     },
     createHeaderData (column, children) {
