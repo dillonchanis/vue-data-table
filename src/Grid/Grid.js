@@ -4,17 +4,16 @@ import { warn } from '../helpers'
 
 import GridFilter from './GridFilter'
 import GridPageSize from './GridPageSize'
+
 import TableHead from './mixins/head'
 import TableBody from './mixins/body'
+import TableLoader from './mixins/loader'
 
 export default {
   name: 'lunar-table',
   components: {},
   filters: {},
-  mixins: [
-    TableHead,
-    TableBody
-  ],
+  mixins: [TableHead, TableBody, TableLoader],
   props: {
     columns: {
       type: Array,
@@ -67,6 +66,7 @@ export default {
       limit: {
         pageSize: this.limitOptions[0]
       },
+      loading: false,
       response: {
         records: []
       },
@@ -184,6 +184,7 @@ export default {
 
     const table = h('table', {}, [
       this.createTableHead(),
+      // this.createTableLoader(),
       this.createTableBody()
     ])
 

@@ -1,7 +1,7 @@
 <template>
   <td :class="classes">
     <template v-if="edit && edit.row === id">
-      <input type="text" :value="value" @input.trim="updateValue" />
+      <input type="text" :value="value" @input="updateValue" />
     </template>
     <template v-else>
       {{ value }}
@@ -13,10 +13,10 @@
 export default {
   props: {
     id: {
-      required: true
+      required: false
     },
     edit: {
-      required: true
+      required: false
     },
     value: {
       required: true
@@ -35,8 +35,5 @@ export default {
       this.$emit('input', e.target.value)
     }
   }
-  // created () {
-  //   this.value = this.record
-  // }
 }
 </script>

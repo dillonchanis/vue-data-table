@@ -2,16 +2,11 @@
   <div id="app">
     <grid :columns="apiColumns" with-filter :url="url">
       <template slot="records" scope="props">
-        <grid-column class="red" v-model="props.record.id" :edit="props.edit" :id="props.record.id" />
+        <grid-column class="red" v-model="props.record.id" />
         <grid-column v-model="props.record.name" :edit="props.edit" :id="props.record.id" />
         <grid-column  v-model="props.record.email" :edit="props.edit" :id="props.record.id" />
       </template>
     </grid>
-
-    <!--:id="props.record.id" :record="props.record.id" :edit="props.edit"
-    <hr>
-
-    <grid :columns="apiColumns" with-filter :url="url"></grid>-->
   </div>
 </template>
 
@@ -67,5 +62,40 @@ export default {
 
 table tbody tr:hover{
   background-color: rgba(0, 0, 0, 0.1)
+}
+
+table {
+  width: 100%;
+  margin: 10px auto;
+  overflow: hidden;
+}
+
+th {
+  text-align: left;
+}
+
+.table__loader {
+  width: 100%;
+  height: 2px;
+  background: rgba(1, 113, 185, 0.2);
+  overflow: hidden;
+
+  &-indicator {
+    height: 2px;
+    background: rgba(1, 113, 185, 0.8);
+    animation: 1.7s infinite loop ease-in-out;
+  }
+}
+
+@keyframes loop {
+  0% {
+    transform: translateX(0%);
+  }
+  50% {
+    transform: translateX(55%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 </style>
