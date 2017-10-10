@@ -2,14 +2,13 @@
   <div id="app">
     <grid :columns="apiColumns" with-filter :url="url">
       <template slot="records" scope="props">
-        <grid-column class="red" :id="props.record.id" :edit="props.edit.row" :value="props.record.id" />
-        <grid-column :id="props.record.id" :value="props.record.name" :edit="props.edit.row" />
-        <grid-column :id="props.record.id" :value="props.record.email" :edit="props.edit.row" />
+        <grid-column class="red" v-model="props.record.id" :edit="props.edit" :id="props.record.id" />
+        <grid-column v-model="props.record.name" :edit="props.edit" :id="props.record.id" />
+        <grid-column  v-model="props.record.email" :edit="props.edit" :id="props.record.id" />
       </template>
     </grid>
 
-
-    <!--
+    <!--:id="props.record.id" :record="props.record.id" :edit="props.edit"
     <hr>
 
     <grid :columns="apiColumns" with-filter :url="url"></grid>-->
@@ -54,7 +53,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

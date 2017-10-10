@@ -26,17 +26,17 @@ export default {
     createProps (record, index) {
       return { record, index, edit: this.edit }
     },
-    createTD (record, data = {}) {
-      const td = []
+    // createTD (record, data = {}) {
+    //   const td = []
 
-      for (let i = 0; i < this.columns.length; i++) {
-        let value = this.columns[i].value
+    //   for (let i = 0; i < this.columns.length; i++) {
+    //     let value = this.columns[i].value
 
-        td.push(record[value])
-      }
+    //     td.push(record[value])
+    //   }
 
-      return td.map(item => this.$createElement('td', data, item))
-    },
+    //   return td.map(item => this.$createElement('td', data, item))
+    // },
     handleFormEdit (record) {
       if (this.isBeingEdited(record)) {
         this.saveRow(record)
@@ -52,6 +52,7 @@ export default {
     },
     createBodyRow (row, record) {
       const self = this
+      let data = {}
 
       if (this.editable) {
         row.push(this.$createElement('td', {
@@ -61,9 +62,17 @@ export default {
             }
           }
         }, [this.createEditButton(record)]))
+
+        data = {
+          on: {
+            dblclick: () => {
+              self.editRow(record)
+            }
+          }
+        }
       }
 
-      return this.createTableRow(row)
+      return this.createTableRow(row, data)
     },
     createFilteredRecords () {
       const rows = []
