@@ -4,16 +4,19 @@ import { warn } from '../helpers'
 
 import GridFilter from './GridFilter'
 import GridPageSize from './GridPageSize'
+import GridGrouper from './GridGrouper'
+import GridGroupBody from './GridGroupBody'
 
 import TableHead from './mixins/head'
 import TableBody from './mixins/body'
+import TableGrouping from './mixins/grouping'
 import TableLoader from './mixins/loader'
 
 export default {
   name: 'lunar-table',
   components: {},
   filters: {},
-  mixins: [TableHead, TableBody, TableLoader],
+  mixins: [TableHead, TableBody, TableGrouping, TableLoader],
   props: {
     columns: {
       type: Array,
@@ -47,6 +50,10 @@ export default {
       type: String,
       default: null
     },
+    withGrouping: {
+      type: Boolean,
+      default: false
+    },
     withLimit: {
       type: Boolean,
       default: true
@@ -63,6 +70,11 @@ export default {
         form: {}
       },
       filterQuery: '',
+      group: {
+        by: null,
+        map: [],
+        records: []
+      },
       limit: {
         pageSize: this.limitOptions[0]
       },
@@ -150,6 +162,10 @@ export default {
         this.clearEdit()
       })
     },
+    setGrouping () {
+      this.group.records = [_.groupBy(this.filteredRecords, records => records[this.group.by[0]])]
+      this.createGroupingList()
+    },
     sortBy (column) {
       this.sort.key = column.value
       this.sort.order = this.sort.order === 'asc' ? 'desc' : 'asc'
@@ -182,6 +198,24 @@ export default {
       }
     })
 
+    const grouper = h(GridGrouper, {
+      props: {
+        groups: self.columns
+      },
+      on: {
+        change (grouping) {
+          self.group.by = grouping
+          self.setGrouping()
+        }
+      }
+    })
+
+    const groupBody = h(GridGroupBody, {
+      props: {
+        records: this.group.records[0]
+      }
+    })
+
     const table = h('table', {}, [
       this.createTableHead(),
       // this.createTableLoader(),
@@ -190,7 +224,8 @@ export default {
 
     const grid = h('div', {}, [
       this.withFilter ? filter : null,
-      table,
+      this.withGrouping ? grouper : null,
+      this.group.records.length > 0 ? groupBody : table,
       this.withLimit ? pageSize : null
     ])
 

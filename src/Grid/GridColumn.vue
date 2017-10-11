@@ -1,7 +1,11 @@
 <template>
   <td :class="classes">
-    <template v-if="edit && edit.row === id">
-      <input type="text" :value="value" @input="updateValue" />
+    <template v-if="isEditable">
+      <input type="text"
+             :value="value"
+             @input="updateValue"
+             @keydown.esc="parent.grid.clearEdit"
+             @keydown.enter="saveValue" />
     </template>
     <template v-else>
       {{ value }}
@@ -12,27 +16,30 @@
 <script>
 export default {
   props: {
-    id: {
-      required: false
+    classes: {
+      type: [String, Array]
     },
     edit: {
       required: false
     },
+    parent: {
+      required: false
+    },
     value: {
       required: true
-    },
-    classes: {
-      type: [String, Array]
     }
   },
-  data () {
-    return {
-      item: ''
+  computed: {
+    isEditable () {
+      return this.edit && this.parent && this.edit.row === this.parent.record.id
     }
   },
   methods: {
     updateValue (e) {
       this.$emit('input', e.target.value)
+    },
+    saveValue () {
+      this.parent.grid.saveRow(this.edit.form)
     }
   }
 }

@@ -1,10 +1,10 @@
 <template>
   <div id="app">
-    <grid :columns="apiColumns" with-filter :url="url">
+    <grid :columns="columns" with-filter with-grouping :url="url">
       <template slot="records" scope="props">
         <grid-column class="red" v-model="props.record.id" />
-        <grid-column v-model="props.record.name" :edit="props.edit" :id="props.record.id" />
-        <grid-column  v-model="props.record.email" :edit="props.edit" :id="props.record.id" />
+        <grid-column v-model="props.record.name" :parent="props" :edit="props.edit" />
+        <grid-column  v-model="props.record.email" :parent="props" :edit="props.edit" />
       </template>
     </grid>
   </div>
@@ -26,21 +26,7 @@ export default {
       columns: [
         { label: 'ID', value: 'id' },
         { label: 'Name', value: 'name' },
-        { label: 'Email', value: 'email' },
-        { label: 'Job', value: 'job' },
-        { label: 'Age', value: 'age' }
-      ],
-      apiColumns: [
-        { label: 'ID', value: 'id' },
-        { label: 'Name', value: 'name' },
         { label: 'Email', value: 'email' }
-      ],
-      records: [
-        { id: 1, name: 'Dillon', email: 'dillon@example.com', job: 'Web Developer', age: 25 },
-        { id: 2, name: 'John', email: 'john@hotmail.com', job: 'Cashier', age: 17 },
-        { id: 3, name: 'Gina', email: 'gina@gmail.com', job: 'Sonographer', age: 24 },
-        { id: 4, name: 'Arthur', email: 'art@aol.com', job: 'Police Officer', age: 39 },
-        { id: 5, name: 'Jane', email: 'jane@example.com', job: 'Marketing Director', age: 55 }
       ],
       limit: [1, 2, 3, 'All']
     }

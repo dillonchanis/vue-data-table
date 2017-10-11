@@ -24,19 +24,8 @@ export default {
       return this.createTableRow([row])
     },
     createProps (record, index) {
-      return { record, index, edit: this.edit }
+      return { record, index, edit: this.edit, grid: this }
     },
-    // createTD (record, data = {}) {
-    //   const td = []
-
-    //   for (let i = 0; i < this.columns.length; i++) {
-    //     let value = this.columns[i].value
-
-    //     td.push(record[value])
-    //   }
-
-    //   return td.map(item => this.$createElement('td', data, item))
-    // },
     handleFormEdit (record) {
       if (this.isBeingEdited(record)) {
         this.saveRow(record)
