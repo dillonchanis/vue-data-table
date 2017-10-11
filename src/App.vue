@@ -46,7 +46,8 @@ export default {
   color: red;
 }
 
-table tbody tr:hover{
+.grouped__header,
+table tbody tr:hover {
   background-color: rgba(0, 0, 0, 0.1)
 }
 

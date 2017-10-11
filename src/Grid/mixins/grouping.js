@@ -1,10 +1,50 @@
+import _ from 'lodash'
+
 export default {
   methods: {
-    createGroupingList () {
-      const groupingObject = this.group.records[0]
-      this.group.map = Object.keys(groupingObject).map(key => groupingObject[key])
-      console.log(this.group.records[0])
-      console.log(this.group.map)
+    createGroupingBody () {
+      const records = []
+
+      if (this.group.by.length) {
+        records.push(this.createFilteredGroupings())
+      } else {
+        this.group.records = []
+      }
+
+      return this.$createElement('tbody', records)
+    },
+    createGroupHeaderTD (header) {
+      const row = this.$createElement('td', {
+        staticClass: 'grouped__header',
+        attrs: {
+          colspan: '100%'
+        }
+      }, header)
+
+      return this.createTableRow([row])
+    },
+    createFilteredGroupings () {
+      const rows = []
+
+      this.filteredGroupings.forEach((record, index) => {
+        console.log('record', record)
+        if (_.isString(record)) {
+          rows.push(this.createGroupHeaderTD(record))
+        } else {
+          record.forEach(data => {
+            const props = this.createProps(data, index)
+            const row = this.$scopedSlots.records ? this.$scopedSlots.records(props) : []
+
+            rows.push(
+              this.needsTableRow(row)
+                ? this.createTableRow(row)
+                : row
+            )
+          })
+        }
+      })
+
+      return rows
     }
   }
 }

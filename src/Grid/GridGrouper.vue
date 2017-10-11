@@ -1,19 +1,15 @@
 <template>
   <div>
     <label for="group-select">Group By:</label>
-    <select id="group-select" v-model="selected" @change="updateGrouping">
+    <select id="group-select" v-model="selected" @change="update">
       <option v-for="group in groups" :value="group.value" :key="group.value">
         {{ group.value }}
       </option>
     </select>
 
-    <template v-if="groupings.length > 0">
-      <ul class="list-inline">
-        <li v-for="(selectedGroup, index) in groupings" :key="selectedGroup">
-          {{ selectedGroup }} <span @click="removeFromGrouping(selectedGroup)">&times;</span>
-        </li>
-      </ul>
-    </template>
+    <div v-if="selected">
+      <strong>{{ selected }} <span @click="remove">&times;</span></strong>
+    </div>
   </div>
 </template>
 
@@ -27,27 +23,18 @@ export default {
   },
   data () {
     return {
-      selected: this.groups[0],
+      selected: null,
       groupings: []
     }
   },
   methods: {
-    addToGrouping () {
+    update () {
       this.groupings.push(this.selected)
       this.$emit('change', this.groupings)
     },
-    updateGrouping () {
-      this.groupings.includes(this.selected)
-        ? this.removeFromGrouping()
-        : this.addToGrouping()
-    },
-    removeFromGrouping (value) {
-      if (!value) {
-        this.groupings = this.groupings.filter(group => group !== this.selected)
-      } else {
-        this.groupings = this.groupings.filter(group => group !== value)
-      }
-
+    remove () {
+      this.groupings = []
+      this.selected = null
       this.$emit('change', this.groupings)
     }
   }

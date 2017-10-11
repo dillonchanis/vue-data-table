@@ -5,7 +5,7 @@ import { warn } from '../helpers'
 import GridFilter from './GridFilter'
 import GridPageSize from './GridPageSize'
 import GridGrouper from './GridGrouper'
-import GridGroupBody from './GridGroupBody'
+// import GridGroupBody from './GridGroupBody'
 
 import TableHead from './mixins/head'
 import TableBody from './mixins/body'
@@ -71,7 +71,7 @@ export default {
       },
       filterQuery: '',
       group: {
-        by: null,
+        by: [],
         map: [],
         records: []
       },
@@ -109,6 +109,18 @@ export default {
       }
 
       return data
+    },
+    filteredGroupings () {
+      const data = this.group.records[0]
+      const keys = Object.keys(data)
+      const groupedData = []
+
+      for (let i = 0; i < keys.length; i++) {
+        groupedData.push(keys[i])
+        groupedData.push(data[keys[i]])
+      }
+
+      return groupedData
     },
     recordsLength () {
       return this.response.records.length
@@ -164,7 +176,6 @@ export default {
     },
     setGrouping () {
       this.group.records = [_.groupBy(this.filteredRecords, records => records[this.group.by[0]])]
-      this.createGroupingList()
     },
     sortBy (column) {
       this.sort.key = column.value
@@ -210,22 +221,15 @@ export default {
       }
     })
 
-    const groupBody = h(GridGroupBody, {
-      props: {
-        records: this.group.records[0]
-      }
-    })
-
     const table = h('table', {}, [
       this.createTableHead(),
-      // this.createTableLoader(),
-      this.createTableBody()
+      this.group.records.length > 0 ? this.createGroupingBody() : this.createTableBody()
     ])
 
     const grid = h('div', {}, [
       this.withFilter ? filter : null,
       this.withGrouping ? grouper : null,
-      this.group.records.length > 0 ? groupBody : table,
+      table,
       this.withLimit ? pageSize : null
     ])
 

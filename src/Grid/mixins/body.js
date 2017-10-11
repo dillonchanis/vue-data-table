@@ -1,4 +1,3 @@
-import { isEmpty } from '../../helpers'
 import * as buttons from '../../constants'
 
 export default {
@@ -68,7 +67,6 @@ export default {
 
       this.filteredRecords.forEach((record, index) => {
         const props = this.createProps(record, index)
-
         const row = this.$scopedSlots.records ? this.$scopedSlots.records(props) : []
 
         rows.push(
@@ -78,9 +76,7 @@ export default {
         )
       })
 
-      if (!rows.every(isEmpty)) return rows
-
-      return this.filteredRecords.map(record => this.createTableRow(this.createTD(record)))
+      return rows
     }
   }
 }
