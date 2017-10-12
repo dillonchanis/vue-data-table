@@ -1,4 +1,5 @@
 import * as buttons from '../../constants'
+import { mergeWith } from 'lodash'
 
 export default {
   methods: {
@@ -13,7 +14,7 @@ export default {
         records.push(this.createFilteredRecords())
       }
 
-      return this.$createElement('tbody', records)
+      return this.$createElement('tbody', { staticClass: 'grid__body' }, records)
     },
     createEmptyBody (text) {
       const row = this.$createElement('td', {
@@ -42,6 +43,16 @@ export default {
       const self = this
       let data = {}
 
+      if (this.selectable) {
+        data = mergeWith(data, {
+          on: {
+            click: () => {
+              self.selectRow(record)
+            }
+          }
+        })
+      }
+
       if (this.editable) {
         row.push(this.$createElement('td', {
           on: {
@@ -51,14 +62,16 @@ export default {
           }
         }, [this.createEditButton(record)]))
 
-        data = {
+        data = mergeWith(data, {
           on: {
             dblclick: () => {
               self.editRow(record)
             }
           }
-        }
+        })
       }
+
+      data.staticClass = 'grid__row'
 
       return this.createTableRow(row, data)
     },

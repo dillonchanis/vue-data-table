@@ -1,7 +1,7 @@
 <template>
   <div class="grid__filter">
-    <label for="filter">Filter</label>
-    <input id="filter" name="filter" type="text" :query="query" @input="updateQuery" />
+    <label class="grid__label" for="filter">Filter</label>
+    <input class="grid__input" id="filter" name="filter" type="text" :query="query" @input="updateQuery" />
   </div>
 </template>
 

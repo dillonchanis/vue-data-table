@@ -1,6 +1,6 @@
 <template>
   <div class="grid__page-size">
-    <select v-model="selected" @change="updateLimit">
+    <select class="grid__select" v-model="selected" @change="updateLimit">
       <option v-for="option in limitOptions"
               :key="option"
               :value="option === 'All' ? '' : option">

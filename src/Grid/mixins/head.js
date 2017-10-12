@@ -1,13 +1,15 @@
 export default {
   methods: {
     createTableHead () {
+      if (!this.columns) return
+
       const row = this.columns.map(c => this.createHeader(c))
 
       if (this.editable) {
         row.push(this.$createElement('th', {}, []))
       }
 
-      return this.$createElement('thead', [this.createTableRow(row)])
+      return this.$createElement('thead', { staticClass: 'grid__head' }, [this.createTableRow(row)])
     },
     createHeader (column) {
       return this.$createElement('th', ...this.createHeaderData(column, column[this.columnText]))

@@ -2,6 +2,7 @@
   <td :class="classes">
     <template v-if="isEditable">
       <input type="text"
+             class="grid__input"
              :value="value"
              @input="updateValue"
              @keydown.esc="parent.grid.clearEdit"
@@ -44,3 +45,13 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.column--fixed {
+  display: block;
+  position: absolute;
+  width: 200px;
+  overflow: auto;
+  box-shadow: 2px 0px 3px 0px #333;
+}
+</style>

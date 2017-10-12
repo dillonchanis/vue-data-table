@@ -1,8 +1,9 @@
 <template>
   <div id="app">
-    <grid :columns="columns" with-filter with-grouping :url="url">
+    <grid :columns="columns" with-filter with-grouping :url="url" multi-select>
+      <grid-checkbox />
       <template slot="records" scope="props">
-        <grid-column class="red" v-model="props.record.id" />
+        <grid-column v-model="props.record.id" />
         <grid-column v-model="props.record.name" :parent="props" :edit="props.edit" />
         <grid-column  v-model="props.record.email" :parent="props" :edit="props.edit" />
       </template>
@@ -35,6 +36,15 @@ export default {
 </script>
 
 <style lang="scss">
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

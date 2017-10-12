@@ -1,14 +1,14 @@
 <template>
-  <div>
-    <label for="group-select">Group By:</label>
-    <select id="group-select" v-model="selected" @change="update">
+  <div class="grid__grouper">
+    <label class="grid__label" for="group-select">Group By:</label>
+    <select class="grid__select" id="group-select" v-model="selected" @change="update">
       <option v-for="group in groups" :value="group.value" :key="group.value">
         {{ group.value }}
       </option>
     </select>
 
-    <div v-if="selected">
-      <strong>{{ selected }} <span @click="remove">&times;</span></strong>
+    <div class="grouper__chosen" v-if="selected">
+      <button class="button button--pill" @click="remove">{{ selected }} &times;</button>
     </div>
   </div>
 </template>

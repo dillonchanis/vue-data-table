@@ -5,6 +5,7 @@ import { warn, createFunctionalComponent } from '../helpers'
 import GridFilter from './GridFilter'
 import GridPageSize from './GridPageSize'
 import GridGrouper from './GridGrouper'
+import Preview from './Preview'
 
 import TableHead from './mixins/head'
 import TableBody from './mixins/body'
@@ -33,7 +34,11 @@ export default {
     },
     limitOptions: {
       type: Array,
-      default: () => [25, 50, 100, 'All']
+      default: () => [5, 50, 100, 'All']
+    },
+    multiSelect: {
+      type: Boolean,
+      default: false
     },
     noRecords: {
       type: String,
@@ -46,6 +51,10 @@ export default {
     records: {
       type: Array,
       default: () => []
+    },
+    selectable: {
+      type: Boolean,
+      default: false
     },
     url: {
       type: String,
@@ -81,6 +90,9 @@ export default {
       },
       loading: false,
       response: {
+        records: []
+      },
+      selected: {
         records: []
       },
       sort: {
@@ -193,8 +205,17 @@ export default {
         this.clearEdit()
       })
     },
+    selectRow (record) {
+      if (!this.multiSelect) {
+        this.singleSelect(record)
+      }
+    },
     setGrouping () {
       this.group.records = [_.groupBy(this.filteredRecords, records => records[this.group.by[0]])]
+    },
+    singleSelect (record) {
+      this.selected.records = []
+      this.selected.records.push(record)
     },
     sortBy (column) {
       this.sort.key = column.value
@@ -240,16 +261,24 @@ export default {
       }
     })
 
-    const table = h('table', {}, [
+    const table = h('table', { staticClass: 'lunar__grid' }, [
       this.createTableHead(),
       this.group.records.length > 0 ? this.createGroupingBody() : this.createTableBody()
     ])
+
+    // Temporary, to view selected items
+    const preview = h(Preview, {
+      props: {
+        record: self.selected.records
+      }
+    })
 
     const grid = h('lunar-container', {}, [
       this.withFilter ? filter : null,
       this.withGrouping ? grouper : null,
       table,
-      this.withLimit ? pageSize : null
+      this.withLimit ? pageSize : null,
+      preview
     ])
 
     return grid
