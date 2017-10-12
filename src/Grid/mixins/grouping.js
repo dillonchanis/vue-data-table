@@ -27,7 +27,6 @@ export default {
       const rows = []
 
       this.filteredGroupings.forEach((record, index) => {
-        console.log('record', record)
         if (_.isString(record)) {
           rows.push(this.createGroupHeaderTD(record))
         } else {

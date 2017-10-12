@@ -29,6 +29,7 @@ export default {
   },
   methods: {
     update () {
+      this.groupings = []
       this.groupings.push(this.selected)
       this.$emit('change', this.groupings)
     },

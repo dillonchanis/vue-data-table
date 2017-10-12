@@ -5,7 +5,6 @@ import { warn } from '../helpers'
 import GridFilter from './GridFilter'
 import GridPageSize from './GridPageSize'
 import GridGrouper from './GridGrouper'
-// import GridGroupBody from './GridGroupBody'
 
 import TableHead from './mixins/head'
 import TableBody from './mixins/body'
@@ -111,13 +110,31 @@ export default {
       return data
     },
     filteredGroupings () {
-      const data = this.group.records[0]
+      let data = this.group.records[0]
       const keys = Object.keys(data)
       const groupedData = []
 
       for (let i = 0; i < keys.length; i++) {
+        let items = data[keys[i]]
+
+        items = items.filter(row => {
+          return Object.keys(row).some(key => {
+            return String(row[key]).toLowerCase().indexOf(this.filterQuery.toLowerCase()) > -1
+          })
+        })
+
+        if (this.sort.key) {
+          items = _.orderBy(items, item => {
+            let value = item[this.sort.key]
+            if (!isNaN(parseFloat(value))) {
+              return parseFloat(value)
+            }
+            return String(value).toLowerCase()
+          }, this.sort.order)
+        }
+
         groupedData.push(keys[i])
-        groupedData.push(data[keys[i]])
+        groupedData.push(items)
       }
 
       return groupedData
