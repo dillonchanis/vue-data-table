@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import axios from 'axios'
-import { warn } from '../helpers'
+import { warn, createFunctionalComponent } from '../helpers'
 
 import GridFilter from './GridFilter'
 import GridPageSize from './GridPageSize'
@@ -13,7 +13,9 @@ import TableLoader from './mixins/loader'
 
 export default {
   name: 'lunar-table',
-  components: {},
+  components: {
+    'lunar-container': createFunctionalComponent('div', 'lunar-table-container', 'lunar-table-container')
+  },
   filters: {},
   mixins: [TableHead, TableBody, TableGrouping, TableLoader],
   props: {
@@ -243,7 +245,7 @@ export default {
       this.group.records.length > 0 ? this.createGroupingBody() : this.createTableBody()
     ])
 
-    const grid = h('div', {}, [
+    const grid = h('lunar-container', {}, [
       this.withFilter ? filter : null,
       this.withGrouping ? grouper : null,
       table,
