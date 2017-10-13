@@ -9,6 +9,17 @@ export default {
         row.push(this.$createElement('th', {}, []))
       }
 
+      if (this.multiSelect) {
+        row.unshift(this.$createElement('th', {}, [
+          this.$createElement('input', {
+            domProps: {
+              type: 'checkbox'
+            },
+            on: { change: this.selectAll }
+          })
+        ]))
+      }
+
       return this.$createElement('thead', { staticClass: 'grid__head' }, [this.createTableRow(row)])
     },
     createHeader (column) {

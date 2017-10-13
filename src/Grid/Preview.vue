@@ -15,11 +15,12 @@ export default {
 </script>
 
 <style scoped>
-div {
-  width: 100%;
-  padding: 10px;
-  overflow: scroll;
-  margin-top: 30px;
-  border: 1px solid brown;
+pre {
+  color: #555;
+  background: #eee;
+  padding: 1em;
+  border-left: 2px solid #0071b9;
+  border-bottom: 1px solid #d8dee9;
+  overflow-x: auto;
 }
 </style>

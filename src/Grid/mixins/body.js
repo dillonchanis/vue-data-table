@@ -16,6 +16,9 @@ export default {
 
       return this.$createElement('tbody', { staticClass: 'grid__body' }, records)
     },
+    createTD (children) {
+      return this.$createElement('td', {}, [children])
+    },
     createEmptyBody (text) {
       const row = this.$createElement('td', {
         attrs: { colspan: '100%' }
@@ -45,6 +48,9 @@ export default {
 
       if (this.selectable) {
         data = mergeWith(data, {
+          'class': {
+            'grid__row--selected': self.isSelected(record.id)
+          },
           on: {
             click: () => {
               self.selectRow(record)
@@ -69,6 +75,23 @@ export default {
             }
           }
         })
+      }
+
+      if (this.multiSelect) {
+        const self = this
+
+        const checkbox = this.$createElement('input', {
+          domProps: {
+            type: 'checkbox'
+          },
+          on: {
+            click: () => {
+              self.selectRow(record)
+            }
+          }
+        })
+
+        row.unshift(this.createTD(checkbox))
       }
 
       data.staticClass = 'grid__row'

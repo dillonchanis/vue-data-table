@@ -48,6 +48,10 @@ export default {
       type: String,
       default: 'No results found.'
     },
+    recordKey: {
+      type: String,
+      default: 'id'
+    },
     records: {
       type: Array,
       default: () => []
@@ -158,6 +162,10 @@ export default {
     }
   },
   mounted () {
+    if (this.selectable && this.multiSelect) {
+      this.warn('Only use selectable or multiselect options, not both.')
+    }
+
     this.response.records = this.records
 
     if (!this.recordsLength && !this.url) {
@@ -186,6 +194,12 @@ export default {
         this.response.records = response.data
       })
     },
+    isSelected (id) {
+      if (this.selected.records.length) {
+        return this.selected.records[0].id === id
+      }
+      return false
+    },
     needsTableRow (row) {
       return row.length && (row.find(r => r.tag === 'td') || row.find(r => r.tag.includes('grid-column')))
     },
@@ -207,14 +221,40 @@ export default {
     },
     selectRow (record) {
       if (!this.multiSelect) {
-        this.singleSelect(record)
+        this.selectSingleRow(record)
+      } else {
+        this.selectRows(record)
       }
     },
     setGrouping () {
       this.group.records = [_.groupBy(this.filteredRecords, records => records[this.group.by[0]])]
     },
-    singleSelect (record) {
+    selectAll (event) {
+      if (this.selected.records.length > 0) {
+        this.selected.records = []
+        return
+      }
+
+      const selected = []
+
+      this.response.records.forEach(record => {
+        selected.push(record)
+      })
+
+      this.selected.records = selected
+    },
+    selectSingleRow (record) {
       this.selected.records = []
+      this.selected.records.push(record)
+    },
+    selectRows (record) {
+      const index = _.findIndex(this.selected.records, record)
+
+      if (index >= 0) {
+        this.selected.records = _.remove(this.selected.records, r => r !== record)
+        return
+      }
+
       this.selected.records.push(record)
     },
     sortBy (column) {
@@ -277,10 +317,14 @@ export default {
       this.withFilter ? filter : null,
       this.withGrouping ? grouper : null,
       table,
-      this.withLimit ? pageSize : null,
+      this.withLimit ? pageSize : null
+    ])
+
+    const content = h('div', {}, [
+      grid,
       preview
     ])
 
-    return grid
+    return content
   }
 }
