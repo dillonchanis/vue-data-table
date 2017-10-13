@@ -45,23 +45,5 @@ export default {
   justify-content: flex-end;
   padding: 1em 24px;
   width: 30%;
-
-  .grid__label {
-    color: #777;
-    font-size: 0.85em;
-    margin-right: 5px;
-  }
-
-  .grid__select {
-    display: block;
-    height: 2.25em;
-    outline: none;
-    border: 1px solid #dbdbdb;
-    padding-left: 1em;
-    padding-right: 2.5em;
-    line-height: 1.5;
-    box-shadow: none;
-    width: 90%;
-  }
 }
 </style>

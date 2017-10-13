@@ -5,6 +5,7 @@ import { warn, createFunctionalComponent } from '../helpers'
 import GridFilter from './GridFilter'
 import GridPageSize from './GridPageSize'
 import GridGrouper from './GridGrouper'
+import GroupList from './Grouping/GroupList'
 import Preview from './Preview'
 
 import TableHead from './mixins/head'
@@ -30,7 +31,7 @@ export default {
     },
     editable: {
       type: Boolean,
-      default: true
+      default: false
     },
     limitOptions: {
       type: Array,
@@ -86,7 +87,6 @@ export default {
       filterQuery: '',
       group: {
         by: [],
-        map: [],
         records: []
       },
       limit: {
@@ -181,6 +181,9 @@ export default {
     clearEdit () {
       this.edit.row = null
       this.edit.form = {}
+    },
+    clearGrouping () {
+      this.group.by = []
     },
     createTableRow (row, data = {}) {
       return this.$createElement('tr', data, row)
@@ -301,6 +304,17 @@ export default {
       }
     })
 
+    const groupList = h(GroupList, {
+      props: {
+        group: self.group.by
+      },
+      on: {
+        click () {
+          self.clearGrouping()
+        }
+      }
+    })
+
     const table = h('table', { staticClass: 'lunar__grid' }, [
       this.createTableHead(),
       this.group.records.length > 0 ? this.createGroupingBody() : this.createTableBody()
@@ -316,6 +330,7 @@ export default {
     const grid = h('lunar-container', {}, [
       this.withFilter ? filter : null,
       this.withGrouping ? grouper : null,
+      this.withGrouping ? groupList : null,
       table,
       this.withLimit ? pageSize : null
     ])

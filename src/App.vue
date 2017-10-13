@@ -2,7 +2,7 @@
   <div id="app">
     <h1 class="title">Vue Data Table</h1>
 
-    <grid :columns="columns" with-filter with-grouping :url="url" selectable>
+    <grid :columns="columns" :url="url" with-filter editable multi-select with-grouping>
       <template slot="records" scope="props">
         <grid-column v-model="props.record.id" />
         <grid-column v-model="props.record.name" :parent="props" :edit="props.edit" />
@@ -29,24 +29,27 @@ export default {
         { label: 'ID', value: 'id' },
         { label: 'Name', value: 'name' },
         { label: 'Email', value: 'email' }
-      ],
-      limit: [1, 2, 3, 'All']
+      ]
     }
   }
 }
 </script>
 
 <style lang="scss">
+$brand-primary: #0071b9;
+
 * {
   box-sizing: border-box;
 }
 
 html, body {
+  background: #f8faff;
   width: 100%;
   height: 100%;
   margin: 0 auto;
   max-width: 50em;
   padding: 1em;
+  padding-bottom: 5em;
 }
 
 #app {
@@ -59,7 +62,47 @@ html, body {
 }
 
 a {
-  color: #0071b9;
+  color: $brand-primary;
+}
+
+.button {
+  background: #fff;
+  cursor: pointer;
+  color: #333;
+  border: 1px solid #dbdbdb;
+  border-radius: 3px;
+  box-shadow: none;
+  display: block;
+  font-size: 0.9em;
+  height: 2.25em;
+  padding: 0 12px;
+  line-height: 1.5;
+  text-align: center;
+  white-space: nowrap;
+  transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+}
+
+.button {
+  &--primary {
+    background: $brand-primary;
+    will-change: background;
+  }
+
+  &--edit {
+    border-color: transparent;
+    background: lighten($brand-primary, 10%);
+    color: #fff;
+
+    &:hover {
+      background: lighten($brand-primary, 20%);
+    }
+  }
+
+  &--save {
+    border-color: transparent;
+    background: darken(#23d160, 5%);
+    color: #fff;
+  }
 }
 
 .title {
@@ -84,6 +127,7 @@ a {
 
 .lunar-table-container {
   width: 100%;
+  background: #fff;
   overflow-x: auto;
   overflow-y: hidden;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 3px, rgba(0, 0, 0, 0.14) 0px 1px 1px, rgba(0, 0, 0, 0.12) 0px 2px 1px -1px;
@@ -96,6 +140,11 @@ a {
     border-radius: 2px;
     border-spacing: 0px;
 
+    th,
+    td {
+      padding: 0 24px;
+    }
+
     .grid__head {
       tr {
         height: 56px;
@@ -105,7 +154,6 @@ a {
       th {
         cursor: pointer;
         text-align: left;
-        padding: 0 24px;
         font-weight: 500;
         font-size: 14px;
         white-space: nowrap;
@@ -114,15 +162,11 @@ a {
       }
     }
 
-    .grid__body {
+    tbody {
       tr {
         will-change: background;
         transition: background 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
         border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-
-        // &:not(:last-child) {
-        //   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-        // }
 
         &:hover {
           background: rgb(238, 238, 238);
@@ -131,14 +175,37 @@ a {
 
       td {
         height: 48px;
-        padding: 0 24px;
         font-weight: 400;
         font-size: 13px;
       }
     }
+
+    .grouped__header {
+      color: #333;
+      height: 48px;
+      background-color: rgba(0, 0, 0, 0.12);
+    }
   }
 }
 
+.grid__label {
+  color: #777;
+  font-size: 0.85em;
+  margin-right: 5px;
+}
+
+.grid__select {
+  display: block;
+  height: 2.25em;
+  outline: none;
+  border: 1px solid #dbdbdb;
+  padding-left: 1em;
+  padding-right: 2.5em;
+  line-height: 1.5;
+  box-shadow: none;
+  width: 100%;
+  background-color: transparent;
+}
 
 .table__loader {
   width: 100%;

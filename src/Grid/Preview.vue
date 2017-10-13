@@ -15,6 +15,10 @@ export default {
 </script>
 
 <style scoped>
+div {
+  margin-bottom: 6em;
+}
+
 pre {
   color: #555;
   background: #eee;

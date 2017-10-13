@@ -33,6 +33,25 @@ export default {
           record.forEach(data => {
             const props = this.createProps(data, index)
             const row = this.$scopedSlots.records ? this.$scopedSlots.records(props) : []
+            const self = this
+
+            if (this.editable) {
+              row.push(this.$createElement('td', {
+                on: {
+                  click (e) {
+                    self.handleFormEdit(record)
+                  }
+                }
+              }, [this.createEditButton(record)]))
+
+              data = _.mergeWith(data, {
+                on: {
+                  dblclick: () => {
+                    self.editRow(record)
+                  }
+                }
+              })
+            }
 
             rows.push(
               this.needsTableRow(row)
