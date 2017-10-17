@@ -46,7 +46,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .column--fixed {
   display: block;
   position: absolute;

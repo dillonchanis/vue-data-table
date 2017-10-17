@@ -94,7 +94,8 @@ export default {
       },
       loading: false,
       response: {
-        records: []
+        records: [],
+        errors: []
       },
       selected: {
         records: []
@@ -193,9 +194,13 @@ export default {
       this.edit.form = record
     },
     getRecords () {
-      return axios.get(`${this.url}?_start=0&_limit=${this.limit.pageSize}`).then((response) => {
-        this.response.records = response.data
-      })
+      return axios.get(`${this.url}?_start=0&_limit=${this.limit.pageSize}`)
+        .then((response) => {
+          this.response.records = response.data
+        })
+        .catch((error) => {
+          this.response.errors = error
+        })
     },
     isSelected (id) {
       if (this.selected.records.length) {
