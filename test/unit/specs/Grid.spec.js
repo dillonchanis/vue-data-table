@@ -1,8 +1,7 @@
-import { mount, shallow } from 'vue-test-utils'
+import { mount } from 'vue-test-utils'
 import Grid from '../../../src/Grid/Grid'
 
 describe('Grid.js', () => {
-  let component
   const columns = [
     { label: 'ID', value: 'id' },
     { label: 'Name', value: 'name' },
@@ -14,14 +13,12 @@ describe('Grid.js', () => {
     columns: columns
   }
 
-  beforeEach(() => {
-    component = shallow(Grid, {
+  it('should have received a URL as a url property', () => {
+    const wrapper = mount(Grid, {
       propsData: props
     })
-  })
 
-  it('has received a URL as a url property', () => {
-    expect(component.vm.url).toEqual('https://jsonplaceholder.typicode.com/comments')
+    expect(wrapper.vm.url).toEqual('https://jsonplaceholder.typicode.com/comments')
   })
 
   it('should have correct aria-label for sorting on column header', () => {
@@ -29,6 +26,10 @@ describe('Grid.js', () => {
       propsData: props
     })
 
-    console.log(wrapper.find('th'))
+    let header = wrapper.find('table th')
+    expect(header.hasAttribute('aria-sort', wrapper.vm.sort.order)).toBe(true)
+
+    let lastHeader = wrapper.find('table th:last-child')
+    expect(lastHeader.hasAttribute('aria-sort', 'none')).toBe(true)
   })
 })
