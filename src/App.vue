@@ -2,7 +2,7 @@
   <div id="app">
     <h1 class="title">Vue Data Table</h1>
 
-    <grid :columns="columns" :url="url" with-filter with-grouping multi-select>
+    <grid id="grid1" :columns="columns" :url="url" with-filter with-grouping multi-select editable>
       <template slot="records" scope="props">
         <grid-column v-model="props.record.id" />
         <grid-column v-model="props.record.name" :parent="props" :edit="props.edit" />

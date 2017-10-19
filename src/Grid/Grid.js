@@ -1,11 +1,12 @@
 import _ from 'lodash'
 import axios from 'axios'
-import { warn, createFunctionalComponent } from '../helpers'
+import { warn, createFunctionalComponent, exportToCSV, exportToPDF } from '../helpers'
 
 import GridFilter from './GridFilter'
 import GridPageSize from './GridPageSize'
 import GridGrouper from './GridGrouper'
 import GroupList from './Grouping/GroupList'
+import Action from './Actions/Button'
 import Preview from './Preview'
 
 import TableHead from './mixins/head'
@@ -15,11 +16,13 @@ import TableLoader from './mixins/loader'
 
 export default {
   name: 'lunar-table',
+
   components: {
     'lunar-container': createFunctionalComponent('div', 'lunar-table-container', 'lunar-table-container')
   },
-  filters: {},
+
   mixins: [TableHead, TableBody, TableGrouping, TableLoader],
+
   props: {
     columns: {
       type: Array,
@@ -61,6 +64,10 @@ export default {
       type: Boolean,
       default: false
     },
+    tableID: {
+      type: String,
+      required: false
+    },
     url: {
       type: String,
       default: null
@@ -78,6 +85,7 @@ export default {
       default: false
     }
   },
+
   data () {
     return {
       edit: {
@@ -106,6 +114,7 @@ export default {
       }
     }
   },
+
   computed: {
     filteredRecords () {
       let data = this.response.records
@@ -162,6 +171,7 @@ export default {
       return this.response.records.length
     }
   },
+
   mounted () {
     if (this.selectable && this.multiSelect) {
       this.warn('Only use selectable or multiselect options, not both.')
@@ -178,6 +188,7 @@ export default {
       this.getRecords()
     }
   },
+
   methods: {
     clearEdit () {
       this.edit.row = null
@@ -192,6 +203,12 @@ export default {
     editRow (record) {
       this.edit.row = record.id
       this.edit.form = record
+    },
+    csv () {
+      exportToCSV(this.$el, 'Example File', {
+        editable: this.editable,
+        multiSelect: this.multiSelect
+      })
     },
     getRecords () {
       return axios.get(`${this.url}?_start=0&_limit=${this.limit.pageSize}`)
@@ -210,6 +227,9 @@ export default {
     },
     needsTableRow (row) {
       return row.length && (row.find(r => r.tag === 'td') || row.find(r => r.tag.includes('grid-column')))
+    },
+    pdf () {
+      exportToPDF(this.$el, 'Example PDF')
     },
     saveRow (record) {
       axios.patch(`${this.url}/${this.edit.row}`, this.edit.form).then((response) => {
@@ -271,6 +291,7 @@ export default {
     },
     warn
   },
+
   render (h) {
     const self = this
 
@@ -320,7 +341,21 @@ export default {
       }
     })
 
-    const table = h('table', { staticClass: 'lunar__grid' }, [
+    const csvButton = h(Action, {
+      props: {
+        text: 'CSV',
+        action: self.csv
+      }
+    })
+
+    const pdfButton = h(Action, {
+      props: {
+        text: 'PDF',
+        action: self.pdf
+      }
+    })
+
+    const table = h('table', { staticClass: 'lunar__grid', attrs: { id: this.id || 'l-grid' } }, [
       this.createTableHead(),
       this.group.records.length > 0 ? this.createGroupingBody() : this.createTableBody()
     ])
@@ -336,6 +371,8 @@ export default {
       this.withFilter ? filter : null,
       this.withGrouping ? grouper : null,
       this.withGrouping ? groupList : null,
+      csvButton,
+      pdfButton,
       table,
       this.withLimit ? pageSize : null
     ])
