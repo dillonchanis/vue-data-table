@@ -20,12 +20,12 @@ export const exportToCSV = (table, filename, settings) => {
     }
 
     if (settings.multiSelect) {
-      cols.splice(0, 0)
+      cols.splice(0, 1)
     }
 
-    for (let j = 0; j < cols.length; j++) {
-      row.push(cols[j].innerText)
-    }
+    cols.forEach(column => {
+      row.push(column.innerText)
+    })
 
     csv.push(row.join(','))
   }
