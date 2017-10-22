@@ -79,14 +79,14 @@ export default {
 
       if (this.multiSelect) {
         const self = this
-
         const checkbox = this.$createElement('input', {
           domProps: {
-            type: 'checkbox'
+            type: 'checkbox',
+            checked: self.isSelected(record.id)
           },
           on: {
-            click: () => {
-              self.selectRow(record)
+            click: (event) => {
+              self.selectRow(event, record)
             }
           }
         })

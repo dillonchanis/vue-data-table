@@ -106,7 +106,8 @@ export default {
         errors: []
       },
       selected: {
-        records: []
+        records: [],
+        all: false
       },
       sort: {
         key: 'id',
@@ -220,7 +221,9 @@ export default {
         })
     },
     isSelected (id) {
-      if (this.selected.records.length) {
+      if (this.selected.records.length && this.multiSelect) {
+        return this.selected.records.some(element => element.id === id)
+      } else if (this.selected.records.length) {
         return this.selected.records[0].id === id
       }
       return false
@@ -247,19 +250,20 @@ export default {
         this.clearEdit()
       })
     },
-    selectRow (record) {
+    selectRow (event, record) {
       if (!this.multiSelect) {
-        this.selectSingleRow(record)
+        this.selectSingleRow(event, record)
       } else {
-        this.selectRows(record)
+        this.selectRows(event, record)
       }
     },
     setGrouping () {
       this.group.records = [_.groupBy(this.filteredRecords, records => records[this.group.by[0]])]
     },
     selectAll (event) {
-      if (this.selected.records.length > 0) {
+      if (this.selected.records.length > 0 && !event.target.checked) {
         this.selected.records = []
+        this.selected.all = false
         return
       }
 
@@ -270,12 +274,13 @@ export default {
       })
 
       this.selected.records = selected
+      this.selected.all = true
     },
     selectSingleRow (record) {
       this.selected.records = []
       this.selected.records.push(record)
     },
-    selectRows (record) {
+    selectRows (event, record) {
       const index = _.findIndex(this.selected.records, record)
 
       if (index >= 0) {
@@ -283,7 +288,9 @@ export default {
         return
       }
 
-      this.selected.records.push(record)
+      if (event.target.checked) {
+        this.selected.records.push(record)
+      }
     },
     sortBy (column) {
       this.sort.key = column.value
