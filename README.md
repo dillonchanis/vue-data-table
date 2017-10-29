@@ -6,7 +6,10 @@ Bare bones VueJS data table component from Lunar Finance app.
 
 - Search Filter
 - Table Head Sorting
-- ...
+- Inline Editing
+- Rows Per Page
+- Data Grouping
+- Single/Multi Row Data Selection
 
 ## Build Setup
 
@@ -29,3 +32,13 @@ npm run unit
 # run all tests
 npm test
 ```
+
+## Todo
+
+- [ ] Fixed Table Header
+- [ ] Fixed Table Columns
+- [ ] Multi-Level Data Grouping
+- [ ] Loading Indicator
+- [ ] Client/Serverside Pagination
+- [ ] Expandable Rows
+- [ ] Theming
