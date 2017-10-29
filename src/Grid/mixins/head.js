@@ -76,6 +76,10 @@ export default {
         }
       }
 
+      if (column.title) {
+        data.attrs.title = column.title
+      }
+
       this.createSortingData(column, children, data)
 
       return [data, children]
