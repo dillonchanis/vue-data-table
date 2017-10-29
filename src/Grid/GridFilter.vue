@@ -8,10 +8,8 @@
              class="grid__input" id="filter" name="filter" type="text"
              :class="{ 'active': isActive }"
              :query="query"
-             @click="isActive = !isActive"
-             @blur="isActive = !isActive"
              @input="updateQuery" />
-      <i aria-hidden="true" :class="{ 'is-active': isActive }" class="material-icons icon">search</i>
+      <i aria-hidden="true" class="fa fa-search icon"></i>
     </div>
   </div>
 </template>
@@ -56,17 +54,6 @@ export default {
     text-align: left;
     font-size: 1em;
     margin-right: -1px;
-  }
-
-  .icon {
-    vertical-align: middle;
-    font-size: 1.5em;
-    color: #dbdbdb;
-    transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
-
-    &.is-active {
-      color: #0071b9;
-    }
   }
 
   .grid__input {
