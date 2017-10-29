@@ -53,6 +53,10 @@ export default {
               })
             }
 
+            if (this.multiSelect) {
+              row.unshift(this.createBodyCheckbox(record))
+            }
+
             rows.push(
               this.needsTableRow(row)
                 ? this.createTableRow(row)

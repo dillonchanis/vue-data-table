@@ -16,9 +16,11 @@ export default {
 
       return this.$createElement('tbody', { staticClass: 'grid__body' }, records)
     },
+
     createTD (children) {
       return this.$createElement('td', {}, [children])
     },
+
     createEmptyBody (text) {
       const row = this.$createElement('td', {
         attrs: { colspan: '100%' }
@@ -26,9 +28,11 @@ export default {
 
       return this.createTableRow([row])
     },
+
     createProps (record, index) {
       return { record, index, edit: this.edit, grid: this }
     },
+
     handleFormEdit (record) {
       if (this.isBeingEdited(record)) {
         this.saveRow(record)
@@ -36,12 +40,15 @@ export default {
         this.editRow(record)
       }
     },
+
     isBeingEdited (record) {
       return this.edit.row === record.id
     },
+
     createEditButton (record) {
       return this.edit.row === record.id ? buttons.SAVE_BUTTON(this) : buttons.EDIT_BUTTON(this)
     },
+
     createBodyRow (row, record) {
       const self = this
       let data = {}
@@ -78,26 +85,31 @@ export default {
       }
 
       if (this.multiSelect) {
-        const self = this
-        const checkbox = this.$createElement('input', {
-          domProps: {
-            type: 'checkbox',
-            checked: self.isSelected(record.id)
-          },
-          on: {
-            click: (event) => {
-              self.selectRow(event, record)
-            }
-          }
-        })
-
-        row.unshift(this.createTD(checkbox))
+        row.unshift(this.createBodyCheckbox(record))
       }
 
       data.staticClass = 'grid__row'
 
       return this.createTableRow(row, data)
     },
+
+    createBodyCheckbox (record) {
+      const self = this
+      const checkbox = this.$createElement('input', {
+        domProps: {
+          type: 'checkbox',
+          checked: self.isSelected(record.id)
+        },
+        on: {
+          click: (event) => {
+            self.selectRow(event, record)
+          }
+        }
+      })
+
+      return this.createTD(checkbox)
+    },
+
     createFilteredRecords () {
       const rows = []
 
