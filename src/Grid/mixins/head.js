@@ -20,11 +20,18 @@ export default {
         ]))
       }
 
-      return this.$createElement('thead', { staticClass: 'grid__head' }, [this.createTableRow(row)])
+      return this.$createElement('thead', {
+        staticClass: 'grid__head',
+        'class': {
+          'head--fixed': this.fixedHead // TODO
+        }
+      }, [this.createTableRow(row)])
     },
+
     createHeader (column) {
-      return this.$createElement('th', ...this.createHeaderData(column, column[this.columnText]))
+      return this.$createElement('th', ...this.createHeaderData(column, [column[this.columnText]]))
     },
+
     createSortingData (column, children, data) {
       if (!('value' in column)) {
         this.warn('Columns must have a value property.')
@@ -45,8 +52,21 @@ export default {
 
       if (this.sort.key === column.value) {
         data.attrs['aria-sort'] = this.sort.order
+
+        const icon = this.$createElement('i', {
+          attrs: {
+            'aria-hidden': true,
+            class: this.getSortingClass(this.sort.order)
+          },
+          style: {
+            marginLeft: '5px'
+          }
+        })
+
+        children.push(icon)
       }
     },
+
     createHeaderData (column, children) {
       const data = {
         attrs: {
@@ -59,6 +79,15 @@ export default {
       this.createSortingData(column, children, data)
 
       return [data, children]
+    },
+
+    getSortingClass (order) {
+      const classes = {
+        asc: 'fa fa-sort-amount-asc',
+        desc: 'fa fa-sort-amount-desc'
+      }
+
+      return classes[order]
     }
   }
 }

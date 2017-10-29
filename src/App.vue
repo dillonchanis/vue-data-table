@@ -2,7 +2,7 @@
   <div id="app">
     <h1 class="title">Vue Data Table</h1>
 
-    <grid id="grid1" :columns="columns" :url="url" with-filter with-grouping multi-select editable>
+    <grid id="grid1" :columns="columns" :url="url" with-filter with-grouping fixedHead editable multi-select>
       <template slot="records" scope="props">
         <grid-column v-model="props.record.id" />
         <grid-column v-model="props.record.name" :parent="props" :edit="props.edit" />
@@ -86,15 +86,17 @@ a {
   &--primary {
     background: $brand-primary;
     will-change: background;
+    color: #fff;
   }
 
   &--edit {
     border-color: transparent;
-    background: lighten($brand-primary, 10%);
-    color: #fff;
+    background: transparent;
+    color: lighten($brand-primary, 10%);
 
     &:hover {
       background: lighten($brand-primary, 20%);
+      color: #fff;
     }
   }
 
@@ -127,6 +129,7 @@ a {
 
 .lunar-table-container {
   width: 100%;
+  position: relative;
   background: #fff;
   overflow-x: auto;
   overflow-y: hidden;

@@ -36,6 +36,10 @@ export default {
       type: Boolean,
       default: false
     },
+    fixedHead: {
+      type: Boolean,
+      default: false
+    },
     limitOptions: {
       type: Array,
       default: () => [5, 50, 100, 'All']

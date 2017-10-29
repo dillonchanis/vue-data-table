@@ -14,6 +14,7 @@ export default {
   name: 'grid-grouper',
   props: {
     groups: {
+      type: Array,
       required: true
     }
   },
@@ -27,11 +28,6 @@ export default {
     update () {
       this.groupings = []
       this.groupings.push(this.selected)
-      this.$emit('change', this.groupings)
-    },
-    remove () {
-      this.groupings = []
-      this.selected = null
       this.$emit('change', this.groupings)
     }
   }

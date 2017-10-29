@@ -27,8 +27,4 @@ div {
   flex-direction: row;
   margin: 0 10px;
 }
-
-.button {
-  background-color: #0090ec;
-}
 </style>
