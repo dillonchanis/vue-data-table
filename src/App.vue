@@ -31,7 +31,7 @@ export default {
       columns: [
         { label: 'ID', value: 'id', title: 'Identification' },
         { label: 'Name', value: 'name', title: 'Name' },
-        { label: 'Email', value: 'email' }
+        { label: 'Email', value: 'email', title: 'Email' }
       ]
     }
   }

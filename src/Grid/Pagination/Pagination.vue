@@ -12,7 +12,7 @@
         </a>
       </li>
       <li class="pagination__item"
-        v-for="page in links"
+        v-for="page in pages"
         :key="page"
         :class="{ 'active': pagination.current === page }"
       >
@@ -55,23 +55,25 @@
       }
     },
     computed: {
+      pages () {
+        return this.links[this.chunk]
+      },
       links () {
-        return this.pageLinks[this.chunk]
+        const totalPages = Number(Math.ceil(this.pagination.total / this.pagination.pageSize))
+        this.totalPages = totalPages
+
+        return chunk(range(1, totalPages + 1), this.pagination.total)
       }
     },
     created () {
-      const totalPages = Number(Math.ceil(this.pagination.total / this.pagination.pageSize))
-      this.totalPages = totalPages
-
-      if (totalPages > 5) {
-        this.pageLinks = chunk(range(1, totalPages), 5)
-      } else {
-        this.pageLinks = range(1, totalPages)
-      }
+      this.pageLinks = this.links
+    },
+    updated () {
+      this.pageLinks = this.links
     },
     methods: {
       nextChunk () {
-        if (this.chunk >= this.pageLinks.length - 1) return
+        if (this.chunk >= this.links.length - 1) return
         this.chunk++
       },
       previousChunk () {
@@ -79,9 +81,9 @@
         this.chunk--
       },
       switchPage (page) {
-        if (page === this.links[0] - 1) {
+        if (page === this.pages[0] - 1) {
           this.previousChunk()
-        } else if (page === last(this.links) + 1) {
+        } else if (page === last(this.pages) + 1) {
           this.nextChunk()
         }
 

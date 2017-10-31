@@ -43,7 +43,7 @@ export default {
     },
     limitOptions: {
       type: Array,
-      default: () => [5, 50, 100, 'All']
+      default: () => [25, 50, 100, 'All']
     },
     multiSelect: {
       type: Boolean,
@@ -105,9 +105,6 @@ export default {
       group: {
         by: [],
         records: []
-      },
-      limit: {
-        pageSize: this.limitOptions[0]
       },
       loading: false,
       pagination: {
@@ -180,7 +177,7 @@ export default {
         groupedData.push(items)
       }
 
-      return groupedData
+      return this.paginate(groupedData)
     },
     recordsLength () {
       return this.response.records.length
@@ -226,8 +223,7 @@ export default {
       })
     },
     getRecords () {
-      // &_limit=${this.limit.pageSize}
-      return axios.get(`${this.url}?_start=0`)
+      return axios.get(`${this.url}?_start=0&_limit=${this.pagination.total}`)
         .then((response) => {
           this.response.records = response.data
         })
@@ -341,8 +337,7 @@ export default {
       },
       on: {
         change (pageSize) {
-          self.limit.pageSize = pageSize
-          self.getRecords()
+          self.pagination.pageSize = pageSize
         }
       }
     })
