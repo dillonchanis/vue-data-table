@@ -150,7 +150,7 @@ export default {
         }, this.sort.order)
       }
 
-      return data
+      return this.paginate(data)
     },
     filteredGroupings () {
       let data = this.group.records[0]
@@ -229,7 +229,7 @@ export default {
       // &_limit=${this.limit.pageSize}
       return axios.get(`${this.url}?_start=0`)
         .then((response) => {
-          this.response.records = this.paginate(response.data)
+          this.response.records = response.data
         })
         .catch((error) => {
           this.response.errors = error
