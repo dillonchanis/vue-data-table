@@ -40,8 +40,7 @@
 }
 .grid__page-size {
   padding: 24px;
-  display: flex;
-  justify-content: flex-end;
+  display: inline-flex;
 
   .grid__select {
     display: inline-block;

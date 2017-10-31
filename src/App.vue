@@ -2,7 +2,10 @@
   <div id="app">
     <h1 class="title">Vue Data Table</h1>
 
-    <grid id="grid1" :columns="columns" :url="url" with-filter with-grouping fixedHead editable multi-select>
+    <grid :columns="columns"
+          :url="url"
+          with-filter with-grouping with-pagination
+          editable multi-select>
       <template slot="records" scope="props">
         <grid-column v-model="props.record.id" />
         <grid-column v-model="props.record.name" :parent="props" :edit="props.edit" />
@@ -26,8 +29,8 @@ export default {
     return {
       url: 'https://jsonplaceholder.typicode.com/comments',
       columns: [
-        { label: 'ID', value: 'id' },
-        { label: 'Name', value: 'name' },
+        { label: 'ID', value: 'id', title: 'Identification' },
+        { label: 'Name', value: 'name', title: 'Name' },
         { label: 'Email', value: 'email' }
       ]
     }
@@ -208,6 +211,11 @@ a {
   box-shadow: none;
   width: 100%;
   background-color: transparent;
+}
+
+.grid__pagers {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .table__loader {

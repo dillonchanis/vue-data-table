@@ -6,6 +6,7 @@ import GridFilter from './GridFilter'
 import GridPageSize from './GridPageSize'
 import GridGrouper from './GridGrouper'
 import GroupList from './Grouping/GroupList'
+import GridPagination from './Pagination/Pagination'
 import Action from './Actions/Button'
 import Preview from './Preview'
 
@@ -84,6 +85,10 @@ export default {
       type: Boolean,
       default: true
     },
+    withPagination: {
+      type: Boolean,
+      default: false
+    },
     withFilter: {
       type: Boolean,
       default: false
@@ -105,6 +110,11 @@ export default {
         pageSize: this.limitOptions[0]
       },
       loading: false,
+      pagination: {
+        total: 100,
+        current: 1,
+        pageSize: this.limitOptions[0]
+      },
       response: {
         records: [],
         errors: []
@@ -216,9 +226,10 @@ export default {
       })
     },
     getRecords () {
-      return axios.get(`${this.url}?_start=0&_limit=${this.limit.pageSize}`)
+      // &_limit=${this.limit.pageSize}
+      return axios.get(`${this.url}?_start=0`)
         .then((response) => {
-          this.response.records = response.data
+          this.response.records = this.paginate(response.data)
         })
         .catch((error) => {
           this.response.errors = error
@@ -234,6 +245,10 @@ export default {
     },
     needsTableRow (row) {
       return row.length && (row.find(r => r.tag === 'td') || row.find(r => r.tag.includes('grid-column')))
+    },
+    paginate (records) {
+      const offset = (this.pagination.current - 1) * this.pagination.pageSize
+      return records.slice(offset, offset + this.pagination.pageSize)
     },
     pdf () {
       exportToPDF(this.$el, 'Example PDF')
@@ -300,6 +315,9 @@ export default {
       this.sort.key = column.value
       this.sort.order = this.sort.order === 'asc' ? 'desc' : 'asc'
     },
+    updatePagination (page) {
+      this.pagination.current = page
+    },
     warn
   },
 
@@ -328,6 +346,20 @@ export default {
         }
       }
     })
+
+    const pagination = h(GridPagination, {
+      props: {
+        pagination: this.pagination
+      },
+      on: {
+        pageSwitch (page) {
+          self.updatePagination(page)
+          self.getRecords()
+        }
+      }
+    })
+
+    const pager = h('div', { attrs: { class: 'grid__pagers' } }, [pageSize, pagination])
 
     const grouper = h(GridGrouper, {
       props: {
@@ -385,7 +417,7 @@ export default {
       csvButton,
       pdfButton,
       table,
-      this.withLimit ? pageSize : null
+      pager
     ])
 
     const content = h('div', {}, [
