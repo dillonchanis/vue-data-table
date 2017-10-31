@@ -1,27 +1,33 @@
 <template>
-  <nav class="pagination__container" aria-label="Data table navigation">
+  <nav class="pagination__container" aria-label="Data table pagination">
     <ul class="pagination">
       <li class="pagination__item"
-         :class="{ 'disabled': pagination.current - 1 === 0 }"
-         @click="switchPage(pagination.current - 1)">
-        <a class="pagination__link" href="#" aria-label="Previous">
+          :class="{ 'disabled': pagination.current - 1 === 0 }">
+        <a class="pagination__link"
+           @click.prevent="switchPage(pagination.current - 1)"
+           href="#"
+           aria-label="Previous">
           <span aria-hidden="true">&laquo;</span>
           <span class="sr-only">Previous</span>
         </a>
       </li>
       <li class="pagination__item"
-        v-for="page in totalPages"
+        v-for="page in links"
         :key="page"
         :class="{ 'active': pagination.current === page }"
       >
         <a @click.prevent="switchPage(page)"
-           class="pagination__link"
-           href="#">{{ page }}</a>
+          class="pagination__link"
+          href="#">
+          {{ page }}
+        </a>
       </li>
       <li class="pagination__item"
-         :class="{ 'disabled': pagination.current === pagination.total }"
-         @click="switchPage(pagination.current + 1)">
-        <a class="pagination__link" href="#" aria-label="Next">
+          :class="{ 'disabled': pagination.current === totalPages }">
+        <a class="pagination__link"
+           @click.prevent="switchPage(pagination.current + 1)"
+           href="#"
+           aria-label="Next">
           <span aria-hidden="true">&raquo;</span>
           <span class="sr-only">Next</span>
         </a>
@@ -31,19 +37,54 @@
 </template>
 
 <script>
+  import { chunk, last, range } from 'lodash'
+
   export default {
     name: 'lunar-pagination',
-    props: ['pagination'],
+    props: {
+      pagination: {
+        type: Object,
+        required: true
+      }
+    },
     data () {
       return {
-        totalPages: 0
+        totalPages: 0,
+        pageLinks: [],
+        chunk: 0
+      }
+    },
+    computed: {
+      links () {
+        return this.pageLinks[this.chunk]
       }
     },
     created () {
-      this.totalPages = Number(this.pagination.total / this.pagination.pageSize)
+      const totalPages = Number(Math.ceil(this.pagination.total / this.pagination.pageSize))
+      this.totalPages = totalPages
+
+      if (totalPages > 5) {
+        this.pageLinks = chunk(range(1, totalPages), 5)
+      } else {
+        this.pageLinks = range(1, totalPages)
+      }
     },
     methods: {
+      nextChunk () {
+        if (this.chunk >= this.pageLinks.length - 1) return
+        this.chunk++
+      },
+      previousChunk () {
+        if (this.chunk - 1 < 0) return
+        this.chunk--
+      },
       switchPage (page) {
+        if (page === this.links[0] - 1) {
+          this.previousChunk()
+        } else if (page === last(this.links) + 1) {
+          this.nextChunk()
+        }
+
         this.$emit('pageSwitch', page)
       }
     }
@@ -73,11 +114,16 @@
       border-color: #007bff;
     }
 
-    &.disabled .pagination__link {
-      color: #868e96;
-      pointer-events: none;
-      background-color: #fff;
-      border-color: #ddd;
+    &.disabled {
+      cursor: not-allowed;
+
+      .pagination__link {
+        color: #868e96;
+        cursor: not-allowed;
+        pointer-events: none;
+        background-color: #fff;
+        border-color: #ddd;
+      }
     }
 
     &:first-child .pagination__link {
